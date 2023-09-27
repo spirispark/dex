@@ -115,4 +115,48 @@ describe('Token', () => {
       })
     })
   })
+
+  describe('Delegated Token Transfers', () => {
+
+    let amountApproved = tokens(100)
+    let amountTransfered = tokens(100)
+    let amountInvalid = tokens(100000000)
+    let amountRemaining = tokens(1000000 - 100)
+
+    describe('Success', () => {
+      
+      beforeEach(async() => {
+        transaction = await token.connect(deployer).approve(exchange.address, amountApproved)
+        transaction = await token.connect(exchange).transferFrom(deployer.address, receiver.address, amountTransfered)
+        result = await transaction.wait()
+      })
+
+      it('updates the allowance', async() => {
+        expect(await token.allowance(deployer.address, exchange.address)).to.equal(0)
+      })
+
+      it('transfers token balances', async() => {      
+        expect(await token.balanceOf(deployer.address)).to.equal(amountRemaining)
+        expect(await token.balanceOf(receiver.address)).to.equal(amountTransfered)
+      })
+
+      it('emits a Transfer event', async() => {
+        expect(result.events[0].event).to.equal('Transfer')
+        expect(result.events[0].args.from).to.equal(deployer.address)
+        expect(result.events[0].args.to).to.equal(receiver.address)
+        expect(result.events[0].args.value).to.equal(amountTransfered)
+      })
+    })
+
+    describe('Failure', () => {
+      
+      it('rejects insufficient balances', async() => {
+        await expect(token.connect(exchange).transferFrom(deployer.address, receiver.address, amountInvalid)).to.be.reverted
+      })
+
+      it('rejects insufficient allowance', async() => {
+        expect(await token.allowance(deployer.address, exchange.address)).to.be.reverted
+      })
+    })
+  })
 })
