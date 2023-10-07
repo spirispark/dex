@@ -1,4 +1,4 @@
-async function main() {
+async function deployment() {
   console.log('Preparing deployment..\n')
   
   const accounts = await ethers.getSigners()
@@ -18,7 +18,7 @@ async function main() {
   console.log(`Exchange deployed to: ${exchange.address}`)
 }
 
-main().catch((error) => {
+deployment().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

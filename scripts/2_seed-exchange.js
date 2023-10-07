@@ -9,7 +9,7 @@ const wait = (seconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
-async function main() {
+async function seeding() {
     let accounts, sender, receiver, transaction, result, user1, user2
 
     console.log(`Seeding exchange..\n`)
@@ -155,7 +155,7 @@ async function main() {
     }
 }
     
-main()
+seeding()
 .then(() => process.exit(0))
 .catch((error) => {
     console.error(error);

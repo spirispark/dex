@@ -47,7 +47,7 @@ contract Exchange {
 
     function withdrawToken(address _token, uint256 _value) public {
 
-        require(tokens[_token][msg.sender] >= _value);
+        require(tokens[_token][msg.sender] >= _value, 'insufficient balance');
 
         Token(_token).transfer(msg.sender, _value);
 
@@ -63,7 +63,7 @@ contract Exchange {
 
     function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
 
-        require(tokens[_tokenGive][msg.sender] >= _amountGive);
+        require(tokens[_tokenGive][msg.sender] >= _amountGive, 'insufficient balance');
         
         orderCount ++;
 
@@ -76,8 +76,8 @@ contract Exchange {
         
         _Order storage _order = orders[_id];
 
-        require(_id > 0 && _id <= orderCount);
-        require(_order.user == msg.sender);
+        require(_id > 0 && _id <= orderCount, 'invalid order id');
+        require(_order.user == msg.sender, 'unauthorized cancelation');
 
         orderCancelled[_id] = true;
 
@@ -88,10 +88,10 @@ contract Exchange {
 
         _Order storage _order = orders[_id];
 
-        require(_id > 0 && _id <= orderCount);
-        require(!orderCancelled[_id]);
-        require(!orderFilled[_id]);
-        require(tokens[_order.tokenGet][msg.sender] >= _order.amountGet);
+        require(_id > 0 && _id <= orderCount, 'invalid order id');
+        require(!orderCancelled[_id], 'already canceled order');
+        require(!orderFilled[_id], 'already filled order');
+        require(tokens[_order.tokenGet][msg.sender] >= _order.amountGet, 'insufficient balance');
 
         _trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive);
 
