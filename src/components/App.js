@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { loadAccount, loadProvider, loadNetwork, loadToken } from '../store/interactions'
+import { loadAccount, loadProvider, loadNetwork, loadTokens, loadExchange } from '../store/interactions'
 import config from '../config.json'
 
 function App() {
@@ -10,10 +10,11 @@ function App() {
 
   const loadBlockchainData = async() => {
 
-    await loadAccount(dispatch)
     const provider = loadProvider(dispatch)
+    await loadAccount(provider, dispatch)
     const chainId = await loadNetwork(provider, dispatch)
-    await loadToken(provider, config[chainId].RH.address, dispatch)
+    await loadTokens(provider, [config[chainId].RH.address, config[chainId].mETH.address], dispatch)
+    loadExchange(provider, config[chainId].exchange.address, dispatch)
   }
 
   useEffect(() => {
