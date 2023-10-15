@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-
-import { loadAccount, loadProvider, loadNetwork, loadTokens, loadExchange } from '../store/interactions'
+import { loadProvider, loadAccount, loadNetwork, loadTokens, loadExchange } from '../store/interactions'
 import config from '../config.json'
+import Navbar from './Navbar'
 
 function App() {
 
@@ -11,10 +11,14 @@ function App() {
   const loadBlockchainData = async() => {
 
     const provider = loadProvider(dispatch)
-    await loadAccount(provider, dispatch)
     const chainId = await loadNetwork(provider, dispatch)
-    await loadTokens(provider, [config[chainId].RH.address, config[chainId].mETH.address], dispatch)
-    loadExchange(provider, config[chainId].exchange.address, dispatch)
+    
+    window.ethereum.on('chainChanged', () => {window.location.reload()})
+    window.ethereum.on('accountsChanged', async() => {await loadAccount(provider, dispatch)})
+    
+    // await loadTokens(provider, [config[chainId].RH.address, config[chainId].mETH.address], dispatch)
+    
+    // loadExchange(provider, config[chainId].exchange.address, dispatch)
   }
 
   useEffect(() => {
@@ -24,9 +28,10 @@ function App() {
   return (
     <div>
 
-      {/* Navbar */}
+      <Navbar />
 
       <main className='exchange grid'>
+
         <section className='exchange__section--left grid'>
 
           {/* Markets */}
@@ -36,6 +41,7 @@ function App() {
           {/* Order */}
 
         </section>
+
         <section className='exchange__section--right grid'>
 
           {/* PriceChart */}
@@ -47,6 +53,7 @@ function App() {
           {/* OrderBook */}
 
         </section>
+        
       </main>
 
       {/* Alert */}
