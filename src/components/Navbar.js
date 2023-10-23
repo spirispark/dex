@@ -46,7 +46,7 @@ const Navbar = () => {
             {
                 chainId && 
                 (
-                <select name='networks' id='networks' value={config[chainId]? `0x${chainId.toString(16)}` : `0`} onChange={networkHandler}>
+                <select name='networks' id='networks' value={config[chainId]? `0x${chainId.toString(16)}` : `0`} onChange={(e) => networkHandler(e)}>
                     
                     <option value='0' disabled>Select Network</option>
                     <option value='0x7a69'>Localhost</option>
@@ -89,7 +89,7 @@ const Navbar = () => {
                     </a>
                 )
                 :
-                (<button className='button' onClick={connectHandler}>Connect</button>)
+                (<button className='button' onClick={() => connectHandler()}>Connect</button>)
             }
 
         </div>

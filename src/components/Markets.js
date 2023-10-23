@@ -24,7 +24,7 @@ const Markets = () => {
         {
             config[chainId] &&
             (
-                <select name="markets" id="markets" onChange={marketHandler}>
+                <select name='markets' id='markets' onChange={(e) => marketHandler(e)}>
                     <option value={`${config[chainId].RH.address},${config[chainId].mETH.address}`}>RH / mETH</option>
                     <option value={`${config[chainId].RH.address},${config[chainId].mDAI.address}`}>RH / mDAI</option>
                 </select>
@@ -37,4 +37,4 @@ const Markets = () => {
     )
 }
 
-export default Markets;
+export default Markets
