@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { loadBalances, transferTokens } from '../store/interactions'
 import rh from '../assets/rh.svg'
 import eth from '../assets/eth.svg'
@@ -18,14 +18,34 @@ const Balance = () => {
     const account = useSelector(state => state.provider.account)
     
     const dispatch = useDispatch()
+
     const [token1TransferAmount, setToken1TransferAmount] = useState(0)
     const [token2TransferAmount, setToken2TransferAmount] = useState(0)
+    const [isDeposit, setIsDeposit] = useState(true)
+
+    const depositRef = useRef(null)
+    const withdrawRef = useRef(null)
 
     useEffect(() => {
         if(exchange && tokens[0] && tokens[1] && account) {
             loadBalances(exchange, tokens, account, dispatch)
         }
     }, [exchange, tokens, account, dispatch, transferInProgress])
+
+    const tabHandler = (e) => {
+
+        if (e.target.className === depositRef.current.className) {
+            depositRef.current.className = 'tab tab--active'
+            withdrawRef.current.className = 'tab'
+            setIsDeposit(true)
+        }
+
+        else {
+            depositRef.current.className = 'tab'
+            withdrawRef.current.className = 'tab tab--active'
+            setIsDeposit(false)
+        }
+    }
 
     const amountHandler = (e, token) => {
         
@@ -63,8 +83,8 @@ const Balance = () => {
             
             <div className='tabs'>
                 
-                <button className='tab tab--active'>Deposit</button>
-                <button className='tab'>Withdraw</button>
+                <button onClick={tabHandler} ref={depositRef} className='tab tab--active'>Deposit</button>
+                <button onClick={tabHandler} ref={withdrawRef} className='tab'>Withdraw</button>
 
             </div>
 
@@ -96,7 +116,7 @@ const Balance = () => {
 
                 <button className='button' type='submit'>
 
-                    <span>Deposit</span>
+                    <span>{isDeposit? 'Deposit' : 'Withdraw'}</span>
 
                 </button>
 
@@ -132,7 +152,7 @@ const Balance = () => {
 
                 <button className='button' type='submit'>
 
-                    <span>Deposit</span>
+                    <span>{isDeposit? 'Deposit' : 'Withdraw'}</span>
 
                 </button>
 
