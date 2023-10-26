@@ -73,6 +73,21 @@ const Balance = () => {
         }
     }
 
+    const withdrawHandler = async(e, token) => {
+        
+        e.preventDefault()
+
+        if(token.address === tokens[0].address) {
+            transferTokens(provider, exchange, 'Withdraw', token, token1TransferAmount, dispatch)
+            setToken1TransferAmount(0)
+        }
+
+        else {
+            transferTokens(provider, exchange, 'Withdraw', token, token2TransferAmount, dispatch)
+            setToken2TransferAmount(0)
+        }
+    }
+
     return (
     
     <div className='component exchange__transfers'>
@@ -102,7 +117,7 @@ const Balance = () => {
 
             </div>
 
-            <form onSubmit={(e) => depositHandler(e, tokens[0])}>
+            <form onSubmit={isDeposit ? (e) => depositHandler(e, tokens[0]) : (e) => withdrawHandler(e, tokens[0])}>
                 
                 <label htmlFor='token0'><br />{symbols && symbols[0]} Amount</label>
 
@@ -138,7 +153,7 @@ const Balance = () => {
 
             </div>
 
-            <form onSubmit={(e) => depositHandler(e, tokens[1])}>
+            <form onSubmit={isDeposit ? (e) => depositHandler(e, tokens[1]) : (e) => withdrawHandler(e, tokens[1])}>
                 
                 <label htmlFor='token1'><br />{symbols && symbols[1]} Amount</label>
 
