@@ -34,7 +34,7 @@ export const provider = (state = {}, action) => {
 const DEFAULT_TOKEN_STATE = { loaded: false, contracts: [], symbols: [] }
 
 export const tokens = (state = DEFAULT_TOKEN_STATE, action) => {
-  
+
   switch (action.type) {
     
     case 'TOKEN_1_LOADED':
@@ -70,9 +70,17 @@ export const tokens = (state = DEFAULT_TOKEN_STATE, action) => {
   }
 }
 
-const DEFAULT_EXCHANGE_STATE = { loaded: false, contract: [], transaction: { isSuccessful: false }, events: [] }
+const DEFAULT_EXCHANGE_STATE = {
+  loaded: false,
+  contract: [],
+  transaction: { isSuccessful: false },
+  allOrders: { loaded: false, data: [] },
+  events: []
+}
 
 export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
+
+  let index, data
   
   switch (action.type) {
     
@@ -128,6 +136,53 @@ export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
           isError: true
         },
         transferInProgress: false,
+        events: [action.event, ...state.events]
+      }
+
+    case 'ORDER_REQUEST':
+      return {
+        ...state,
+        transaction: {
+          transactionType: 'Order',
+          isPending: true,
+          isSuccessful: false
+        }
+      }
+
+    case 'ORDER_SUCCESS':
+      index = state.allOrders.data.findIndex(order => order.id === action.orderId)
+
+      if(index === -1) {
+        data = [...state.allOrders.data, action.order]
+      }
+
+      else {
+        data = [...state.allOrders.data]
+      }
+
+      return {
+        ...state,
+        allOrders: {
+          ...state.allOrders,
+          data
+        },
+        transaction: {
+          transactionType: 'Order',
+          isPending: false,
+          isSuccessful: true
+        },
+        events: [action.event, ...state.events]
+      }
+
+    case 'ORDER_FAIL':
+      return {
+        ...state,
+        transaction: {
+          transactionType: 'Order',
+          isPending: false,
+          isSuccessful: false,
+          isError: true
+        },
         events: [action.event, ...state.events]
       }
 

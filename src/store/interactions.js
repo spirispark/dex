@@ -11,6 +11,11 @@ export const subscribeToEvents = (exchange, dispatch) => {
     exchange.on('Withdraw', (token, user, value, balance, event) => {
         dispatch({ type: 'TRANSFER_SUCCESS', event })
     })
+
+    exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
+        const order = event.args
+        dispatch({ type: 'ORDER_SUCCESS', order, event })
+    })
 }
 
 export const loadAccount = async(provider, dispatch) => {
@@ -88,14 +93,14 @@ export const loadBalances = async(exchange, tokens, account, dispatch) => {
 
 export const transferTokens = async(provider, exchange, transferType, token, amount, dispatch) => {
     
-    let transaction
-
     dispatch({ type: 'TRANSFER_REQUEST' })
 
+    let transaction
+
+    const signer = await provider.getSigner()
+    const amountToTransfer = ethers.utils.parseUnits(amount.toString(), 'ether')
+
     try {
-        
-        const signer = await provider.getSigner()
-        const amountToTransfer = ethers.utils.parseUnits(amount.toString(), 'ether')
     
         if (transferType === 'Deposit') {
             
@@ -114,6 +119,49 @@ export const transferTokens = async(provider, exchange, transferType, token, amo
     } 
     
     catch(error) {
+
         dispatch({ type: 'TRANSFER_FAIL' })
+    }
+}
+
+export const makeBuyOrder = async(provider, exchange, tokens, order, dispatch) => {
+
+    dispatch({ type: 'ORDER_REQUEST' })
+
+    const tokenGet = tokens[0].address
+    const amountGet = ethers.utils.parseUnits(order.amount.toString(), 'ether')
+    const tokenGive = tokens[1].address
+    const amountGive = ethers.utils.parseUnits((order.amount * order.price).toString(), 'ether')
+    
+    const signer = await provider.getSigner()
+
+    try {
+        const transaction = await exchange.connect(signer).makeOrder(tokenGet, amountGet, tokenGive, amountGive)
+        await transaction.wait()
+    }
+
+    catch(error) {
+        dispatch({ type: 'ORDER_FAIL' })
+    }
+}
+
+export const makeSellOrder = async(provider, exchange, tokens, order, dispatch) => {
+
+    dispatch({ type: 'ORDER_REQUEST' })
+
+    const tokenGet = tokens[1].address
+    const amountGet = ethers.utils.parseUnits((order.amount * order.price).toString(), 'ether')
+    const tokenGive = tokens[0].address
+    const amountGive = ethers.utils.parseUnits(order.amount.toString(), 'ether')
+    
+    const signer = await provider.getSigner()
+
+    try {
+        const transaction = await exchange.connect(signer).makeOrder(tokenGet, amountGet, tokenGive, amountGive)
+        await transaction.wait()
+    }
+
+    catch(error) {
+        dispatch({ type: 'ORDER_FAIL' })
     }
 }
