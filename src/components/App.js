@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
@@ -16,6 +17,19 @@ import Balance from './Balance';
 import Order from './Order';
 import PriceChart from './PriceChart';
 import OrderBook from './OrderBook';
+=======
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { loadProvider, loadAccount, loadNetwork, loadTokens, loadExchange, loadAllOrders, subscribeToEvents } from '../store/interactions'
+import config from '../config.json'
+import Navbar from './Navbar'
+import Markets from './Markets'
+import Balance from './Balance'
+import Order from './Order'
+import PriceChart from './PriceChart'
+import Trades from './Trades'
+import OrderBook from './OrderBook'
+>>>>>>> 5242d93b7342c3aa194db956b60994b3421165ab
 
 function App() {
   const dispatch = useDispatch();
@@ -69,6 +83,7 @@ function App() {
             <Order />
           </section>
 
+<<<<<<< HEAD
           <section className='exchange__section--right grid'>
             <PriceChart />
             {/* Transactions */}
@@ -77,6 +92,31 @@ function App() {
           </section>
         </main>
       )}
+=======
+        <section className='exchange__section--left grid'>
+
+          <Markets />
+
+          <Balance />
+
+          <Order />
+
+        </section>
+
+        <section className='exchange__section--right grid'>
+
+          <PriceChart />
+
+          {/* Transactions */}
+
+          <Trades />
+
+          <OrderBook />
+
+        </section>
+        
+      </main>
+>>>>>>> 5242d93b7342c3aa194db956b60994b3421165ab
 
       {/* Alert */}
     </div>

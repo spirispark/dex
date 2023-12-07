@@ -81,6 +81,84 @@ const decorateOrderBookOrders = (orders, tokens) => {
     )
 }
 
+const tokenPriceClass = (tokenPrice, orderId, previousOrder) => {
+    
+    if (previousOrder.orderId === orderId) {
+        return GREEN
+    }
+
+    if (previousOrder.tokenPrice <= tokenPrice) {
+        return GREEN
+    }
+
+    else {
+        return RED
+    }
+}
+
+const decorateFilledOrder = (order, previousOrder) => {
+
+    return({
+        ...order,
+        tokenPriceClass: tokenPriceClass(order.tokenPrice, order.id, previousOrder)
+    })
+}
+
+const decorateFilledOrders = (orders, tokens) => {
+
+    let previousOrder = orders[0]
+
+    return(
+        
+        orders.map((order) => {
+
+            order = decorateOrder(order, tokens)
+            order = decorateFilledOrder(order, previousOrder)
+            previousOrder = order
+
+            return order
+        })
+    )
+}
+
+const buildGraphData = (orders) => {
+    
+    orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
+
+    const hours = Object.keys(orders)
+
+    const graphData = hours.map((h) => {
+
+        const group = orders[h]
+
+        const open = group[0]
+        const high = maxBy(group, 'tokenPrice')
+        const low = minBy(group, 'tokenPrice')
+        const close = group[group.length - 1]
+
+        return({
+            x: new Date(h),
+            y: [open.tokenPrice, high.tokenPrice, low.tokenPrice, close.tokenPrice]
+        })
+    })
+
+    return graphData
+}
+
+
+export const filledOrdersSelector = createSelector(filledOrders, tokens, (orders, tokens) => {
+    
+    if(!tokens[0] || !tokens[1]) { return }
+    
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.sort((a, b) => a.timestamp - b.timestamp)
+    orders = decorateFilledOrders(orders, tokens)
+    orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+
+    return orders
+})
+
 export const orderBookSelector = createSelector(openOrders, tokens, (orders, tokens) => {
 
     if(!tokens[0] || !tokens[1]) { return }
@@ -106,30 +184,6 @@ export const orderBookSelector = createSelector(openOrders, tokens, (orders, tok
 
     return orders
 })
-
-const buildGraphData = (orders) => {
-    
-    orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
-
-    const hours = Object.keys(orders)
-
-    const graphData = hours.map((h) => {
-
-        const group = orders[h]
-
-        const open = group[0]
-        const high = maxBy(group, 'tokenPrice')
-        const low = minBy(group, 'tokenPrice')
-        const close = group[group.length - 1]
-
-        return({
-            x: new Date(h),
-            y: [open.tokenPrice, high.tokenPrice, low.tokenPrice, close.tokenPrice]
-        })
-    })
-
-    return graphData
-}
 
 export const priceChartSelector = createSelector(filledOrders, tokens, (orders, tokens) => {
 

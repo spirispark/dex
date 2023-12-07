@@ -66,7 +66,7 @@ const OrderBook = () => {
           :
           
           (
-           <table className='exchange__orderbook--sell'>
+           <table className='exchange__orderbook--buy'>
              
              <caption>Buying</caption>
             
