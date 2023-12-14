@@ -7,6 +7,7 @@ const GREEN = '#25CE8F'
 const RED = '#F45353'
 
 const tokens = state => get(state, 'tokens.contracts')
+const account = state => get(state, 'provider.account')
 
 const cancelledOrders = state => get(state, 'exchange.cancelledOrders.data', [])
 const filledOrders = state => get(state, 'exchange.filledOrders.data', [])
@@ -121,6 +122,31 @@ const decorateFilledOrders = (orders, tokens) => {
     )
 }
 
+const decorateMyOpenOrder = (order, tokens) => {
+
+    const orderType = order.tokenGive === tokens[1].address ? 'buy' : 'sell'
+
+    return({
+        ...order,
+        orderType,
+        orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+    })
+}
+
+const decorateMyOpenOrders = (orders, tokens) => {
+    
+    return(
+
+        orders.map((order) => {
+
+            order = decorateOrder(order, tokens)
+            order = decorateMyOpenOrder(order, tokens)
+
+            return order
+        })
+    )
+}
+
 const buildGraphData = (orders) => {
     
     orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
@@ -145,6 +171,29 @@ const buildGraphData = (orders) => {
     return graphData
 }
 
+export const priceChartSelector = createSelector(filledOrders, tokens, (orders, tokens) => {
+
+    if(!tokens[0] || !tokens[1]) { return }
+
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.sort((a, b) => a.timestamp - b.timestamp)
+    orders = orders.map((o) => decorateOrder(o, tokens))
+
+    let secondLastOrder, lastOrder
+    [secondLastOrder, lastOrder] = orders.slice(orders.length - 2, orders.length)
+
+    const lastPrice = get(lastOrder, 'tokenPrice', 0)
+    const secondLastPrice = get(secondLastOrder, 'tokenPrice', 0)
+
+    return({
+        lastPrice,
+        lastPriceChange: (lastPrice >= secondLastPrice ? '+' : '-'),
+        series: [{
+            data: buildGraphData(orders)
+        }]
+    })
+})
 
 export const filledOrdersSelector = createSelector(filledOrders, tokens, (orders, tokens) => {
     
@@ -185,26 +234,18 @@ export const orderBookSelector = createSelector(openOrders, tokens, (orders, tok
     return orders
 })
 
-export const priceChartSelector = createSelector(filledOrders, tokens, (orders, tokens) => {
+export const myOpenOrdersSelector = createSelector(account, tokens, openOrders, (account, tokens, orders) => {
 
     if(!tokens[0] || !tokens[1]) { return }
 
+    orders = orders.filter((o) => o.user === account)
+
     orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
     orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
-    orders = orders.sort((a, b) => a.timestamp - b.timestamp)
-    orders = orders.map((o) => decorateOrder(o, tokens))
 
-    let secondLastOrder, lastOrder
-    [secondLastOrder, lastOrder] = orders.slice(orders.length - 2, orders.length)
+    orders = decorateMyOpenOrders(orders, tokens)
 
-    const lastPrice = get(lastOrder, 'tokenPrice', 0)
-    const secondLastPrice = get(secondLastOrder, 'tokenPrice', 0)
-
-    return({
-        lastPrice,
-        lastPriceChange: (lastPrice >= secondLastPrice ? '+' : '-'),
-        series: [{
-            data: buildGraphData(orders)
-        }]
-    })
+    orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+    
+    return orders
 })
