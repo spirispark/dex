@@ -147,6 +147,44 @@ const decorateMyOpenOrders = (orders, tokens) => {
     )
 }
 
+const decorateMyFilledOrder = (order, account, tokens) => {
+
+    const myOrder = order.creator === account
+
+    let orderType
+
+    if (myOrder) {
+
+        orderType = order.tokenGet === tokens[0].address ? 'buy' : 'sell'
+    }
+
+    else {
+
+        orderType = order.tokenGet === tokens[0].address ? 'sell' : 'buy'
+    }
+
+    return({
+        ...order,
+        orderType,
+        orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+        orderTypeSign: (orderType === 'buy' ? '+' : '-')
+    })
+}
+
+const decorateMyFilledOrders = (orders, account, tokens) => {
+    
+    return(
+
+        orders.map((order) => {
+
+            order = decorateOrder(order, tokens)
+            order = decorateMyFilledOrder(order, account, tokens)
+
+            return order
+        })
+    )
+}
+
 const buildGraphData = (orders) => {
     
     orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
@@ -239,13 +277,23 @@ export const myOpenOrdersSelector = createSelector(account, tokens, openOrders, 
     if(!tokens[0] || !tokens[1]) { return }
 
     orders = orders.filter((o) => o.user === account)
-
     orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
     orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
-
     orders = decorateMyOpenOrders(orders, tokens)
-
     orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+    
+    return orders
+})
+
+export const myFilledOrdersSelector = createSelector(account, tokens, filledOrders, (account, tokens, orders) => {
+
+    if(!tokens[0] || !tokens[1]) { return }
+
+    orders = orders.filter((o) => o.user === account || o.creator === account)
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+    orders = decorateMyFilledOrders(orders, account, tokens)
     
     return orders
 })
