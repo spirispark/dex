@@ -21,10 +21,10 @@ const openOrders = state => {
 
     const openOrders = reject(all, (order) => {
         
-        const orderCancelled = cancelled.some((o) => o.id.toString() === order.id.toString())
-        const orderFilled = filled.some((o) => o.id.toString() === order.id.toString())
+        const orderCancelled = cancelled.some((o) => o && o.id.toString() === order.id.toString())
+        const orderFilled = filled.some((o) => o && o.id.toString() === order.id.toString())
         
-        return(orderFilled || orderCancelled)
+        return(orderCancelled || orderFilled)
     })
 
     return openOrders
@@ -250,8 +250,8 @@ export const orderBookSelector = createSelector(openOrders, tokens, (orders, tok
 
     if(!tokens[0] || !tokens[1]) { return }
     
-    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
-    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
     orders = decorateOrderBookOrders(orders, tokens)
     orders = groupBy(orders, 'orderType')
 
