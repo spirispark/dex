@@ -119,7 +119,7 @@ const MyTransactions = () => {
 
         </div>
 
-        {!myOpenOrders || myOpenOrders.length === 0 ?
+        {!myFilledOrders || myFilledOrders.length === 0 ?
         
         (
           <Banner text='No Transactions'/>

@@ -213,8 +213,8 @@ export const priceChartSelector = createSelector(filledOrders, tokens, (orders, 
 
     if(!tokens[0] || !tokens[1]) { return }
 
-    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
-    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
     orders = orders.sort((a, b) => a.timestamp - b.timestamp)
     orders = orders.map((o) => decorateOrder(o, tokens))
 
@@ -237,8 +237,8 @@ export const filledOrdersSelector = createSelector(filledOrders, tokens, (orders
     
     if(!tokens[0] || !tokens[1]) { return }
     
-    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
-    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
     orders = orders.sort((a, b) => a.timestamp - b.timestamp)
     orders = decorateFilledOrders(orders, tokens)
     orders = orders.sort((a, b) => b.timestamp - a.timestamp)
@@ -277,8 +277,8 @@ export const myOpenOrdersSelector = createSelector(account, tokens, openOrders, 
     if(!tokens[0] || !tokens[1]) { return }
 
     orders = orders.filter((o) => o.user === account)
-    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
-    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
     orders = decorateMyOpenOrders(orders, tokens)
     orders = orders.sort((a, b) => b.timestamp - a.timestamp)
     
@@ -290,8 +290,8 @@ export const myFilledOrdersSelector = createSelector(account, tokens, filledOrde
     if(!tokens[0] || !tokens[1]) { return }
 
     orders = orders.filter((o) => o.user === account || o.creator === account)
-    orders = orders.filter((o) => o.tokenGet === tokens[0].address || tokens[1].address)
-    orders = orders.filter((o) => o.tokenGive === tokens[0].address || tokens[1].address)
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
     orders = orders.sort((a, b) => b.timestamp - a.timestamp)
     orders = decorateMyFilledOrders(orders, account, tokens)
     
