@@ -10,6 +10,7 @@ import PriceChart from './PriceChart'
 import MyTransactions from './MyTransactions'
 import Trades from './Trades'
 import OrderBook from './OrderBook'
+import Alert from './Alert'
 
 function App() {
 
@@ -67,7 +68,7 @@ function App() {
         
       </main>
 
-      {/* Alert */}
+      <Alert />
 
     </div>
   );
