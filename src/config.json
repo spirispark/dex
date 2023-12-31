@@ -24,19 +24,19 @@
     "11155111": {
         
         "RH": {
-            "address": ""
+            "address": "0x60778154097A1B3E2D5F2F04c024b70546A31564"
         },
 
         "mETH": {
-            "address": ""
+            "address": "0xa6D9DD7640083554C9b7117Ae89846250C5aE2e4"
         },
 
         "mDAI": {
-            "address": ""
+            "address": "0xac0B084351aB2f4a6F138A9f268F6A77C7A37F5f"
         },
 
         "exchange": {
-            "address": ""
+            "address": "0x5019D49406e6583F5743Eb2057023fc8bCc97FAc"
         },
 
         "explorerURL": "https://sepolia.etherscan.io"
@@ -46,19 +46,19 @@
     "80001": {
         
         "RH": {
-            "address": ""
+            "address": "0x1FfAB252965D22DE10447d8Ed06a59FB420D9331"
         },
 
         "mETH": {
-            "address": ""
+            "address": "0x5BF5128B6bE07f3468C3cfD23fcb8Cd3B8FA0711"
         },
 
         "mDAI": {
-            "address": ""
+            "address": "0x69D05D24f51C8BC042f1524EA7bfead02789B22B"
         },
 
         "exchange": {
-            "address": ""
+            "address": "0x39fFDd66cB93b9c9D840D7eF45f29852d09e2Fa3"
         },
 
         "explorerURL": "https://mumbai.polygonscan.com/"
