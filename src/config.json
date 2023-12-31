@@ -24,19 +24,19 @@
     "11155111": {
         
         "RH": {
-            "address": "0x60778154097A1B3E2D5F2F04c024b70546A31564"
+            "address": "0x41899278A28a75b41e0658ae418C8BB81cFeb772"
         },
 
         "mETH": {
-            "address": "0xa6D9DD7640083554C9b7117Ae89846250C5aE2e4"
+            "address": "0xc063eE43E2CF9af6fe3f989D4dB16209B6081909"
         },
 
         "mDAI": {
-            "address": "0xac0B084351aB2f4a6F138A9f268F6A77C7A37F5f"
+            "address": "0x420b36437b5BCF6A0d37D95855f7fDAA91d9BE08"
         },
 
         "exchange": {
-            "address": "0x5019D49406e6583F5743Eb2057023fc8bCc97FAc"
+            "address": "0x5436a5DCF3cE9eaCBe1629690Ab46e6688DCC8F5"
         },
 
         "explorerURL": "https://sepolia.etherscan.io"
@@ -46,19 +46,19 @@
     "80001": {
         
         "RH": {
-            "address": "0x1FfAB252965D22DE10447d8Ed06a59FB420D9331"
+            "address": "0x41899278A28a75b41e0658ae418C8BB81cFeb772"
         },
 
         "mETH": {
-            "address": "0x5BF5128B6bE07f3468C3cfD23fcb8Cd3B8FA0711"
+            "address": "0xc063eE43E2CF9af6fe3f989D4dB16209B6081909"
         },
 
         "mDAI": {
-            "address": "0x69D05D24f51C8BC042f1524EA7bfead02789B22B"
+            "address": "0x420b36437b5BCF6A0d37D95855f7fDAA91d9BE08"
         },
 
         "exchange": {
-            "address": "0x39fFDd66cB93b9c9D840D7eF45f29852d09e2Fa3"
+            "address": "0x5436a5DCF3cE9eaCBe1629690Ab46e6688DCC8F5"
         },
 
         "explorerURL": "https://mumbai.polygonscan.com/"
