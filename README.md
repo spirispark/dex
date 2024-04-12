@@ -1,2 +1,2 @@
 # Decentralized Financial Exchange (DEX)
-Live demo - https://dex.spirispark.com 
+Live demo - https://spirispark-dex.on.fleek.co/
